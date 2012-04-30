@@ -7,6 +7,22 @@ body {
 	padding: 0;
 	background-color: #eee;
 	}
+	
+a {
+	color: #222;
+	text-decoration: none;
+	border-bottom: 1px dotted #999;	
+}
+
+a:hover {
+	color: #7B68EE;
+	text-decoration: none;
+	border-bottom: 1px dotted #7B68EE;	
+}
+
+a:visited{
+}
+	
 h1 {
 	font-size: 40px;
 	color:#000;
