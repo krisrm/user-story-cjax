@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Feature Testing with Crawljax and JavaScript - Developer Guide</title>
+<link rel="stylesheet" href="user-guide.css">
+</head>
+<body>
+<div id=content>
+<h1>Feature Testing with Crawljax and JavaScript</h1>
+<h4>Developer Guide</h4>
+<p>This document will provide low-level specifics on the design and implementation of both the Crawljax Test Server and the Sample User Story Wiki.
+The files needed for this guide are found in the <a href="https://github.com/krisrm/user-story-cjax">Git Repository</a> for the project.</p>
+<h2>Crawljax Test Server</h2>
+<p>The Crawljax Test Server is implemented in Java and makes use of a Java servlet container to provide RESTful (HTTP) access to 
+test methods</p>
+<h3>HTTP API</h3>
+<code>POST http://server/CrawlJaxServer/TestEngine (text/xml)</code>
+<p>The API only has one call for posting test cases. A POST request issued to the servlet at CrawlJaxServer/TestEngine with a well-formatted XML file
+will start the CrawlJax engine (make sure to set the POST content to text/xml).</p>
+<p>The expected XML format is as follows:</p>
+<pre><code>&lt;test-suite&gt;
+	&lt;config&gt;
+		&lt;server&gt;http://crawljax/server/location&lt;/server&gt;
+		&lt;app&gt;http://test/application/location&lt;/app&gt;
+		&lt;script&gt;//Setup Script&lt;/script&gt;
+		&lt;callback&gt;http://url/to/call/back&lt;/callback&gt;
+		&lt;session&gt;sessionId&lt;/session&gt;
+	&lt;/config&gt;
+	&lt;case id="2"&gt;
+		&lt;script&gt;Assert.assertTrue("id",12==12,
+			"numbers fail to work"); etc...&lt;/script&gt;
+	&lt;/case&gt;
+	&lt;case id="3"&gt;
+		&lt;script&gt;//Script for test case 3&lt;/script&gt;
+	&lt;/case&gt;
+&lt;/test-suite&gt;</code></pre>
+<p>config/callback is the URL you'd like CrawlJax to call when finished a test case. This will be formatted as follows:</p>
+<code>POST http://callback/url (text/urlencoded)</code>
+<p><strong>Parameters:</strong></p>
+<code>id - the id of the test case</code><br>
+<code>sessid - the session id given in config/sessionId</code><br>
+<code>errors - a JSON encoded list of errors, or {} for no errors</code><br>
+<code>asserts - the total number of assertion statements that were executed for the case.</code><br>
+<h3>Implementation</h3>
+<img src="uml.png" alt="CrawlJax Test Server UML" width="900">
+<p><strong>How this works:</strong></p>
+<p>XML is posted to TestEngine and parsed into a TestSuite. This TestSuite is passed to the CrawlerManager (on a new Thread),
+via startTests. For each TestCase in the TestSuite, startTest is called, and the currentTest counter is incremented upon
+completion (finishTest). Each time finishTest is called, the url callback provided in the Configuration is called.
+When all TestCases complete, finishedAllTests() is called, the url callback is called with finish=true.
+The CrawlerManager sets up a CrawlJax crawler with a JavaScriptPlugin for each TestCase. When the browser moves to a new page,
+the JavaScriptPlugin's onUrlLoad method is called, and the script attribute of the current test case is executed.
+Any assertions that happened are returned to the CrawlerManager and posted along with any errors. If a CrawlerDirection
+is received, the EmbeddedBrowser is directed to go to the URL, or the CrawlerConfiguration in CrawlerManager is modified.
+</p>
+<h2>User Story Wiki</h2>
+<p>Entity Relationship diagram for the Sample User Story Wiki (which has a MySQL database back-end)</p>
+<img src="er.png" alt="User Story Wiki Entity Relationship" width="900">
+<p>The Sample User Story Wiki is a php application. The main php files and their functions are:</p>
+<ul>
+<li><strong>db.php</strong><p>Declares username/password/database variables. Change if you need to connect to a different database.</p></li>
+<li><strong>head.php</strong><p>Main function repository. Class for User Story, all the database code needed to populate it. Populates variables for main.php and other files.</p></li>
+<li><strong>main.php</strong><p>Main application view. Displays information about user stories, test progress, defines actions for forms.</p></li>
+<li><strong>userstory.php</strong><p>View that shows the User Story form (normally embedded in main.php).</p></li>
+<li><strong>configure.php</strong><p>View that shows up when configure is clicked.</p></li>
+<li><strong>runtest.php</strong><p>Called by AJAX function to start tests. Posts XML to the Crawljax Test Server.</p></li>
+<li><strong>testdone.php</strong><p>Called back by the CrawlJax Test Server with parameters. Populates database.</p></li>
+</ul>
+
+</div>
+</body>
+</html>

@@ -20,25 +20,25 @@ There are a number of pieces of software you need to run the project. If you onl
 Currently, this software exists as a Proof-of-Concept. This means that, while it should theoretically work with many configurations of the required software packages, it has only been tested with one or two of them. For my development, I used:
 </p>
 <p><strong>Testing Server</strong></p>
-<ol>
+<ul>
 <li><a href="http://tomcat.apache.org/download-70.cgi">Apache Tomcat v. 7.02(Servlet container)</a></li>
 <li><a href="http://www.mozilla.org/en-US/firefox/all-older.html">Mozilla Firefox v. 3.6</a> - <em>this is the only version I tested that works with the current version of CrawlJax</em></li>
-</ol>
+</ul>
 <p><strong>Sample User Story Wiki</strong></p>
-<ol>
+<ul>
 <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP (Cross-platform Apache, MySQL, PHP Stack)</a></li>
-</ol>
+</ul>
 <p><strong>Sample Tested Application (WordPress Blog)</strong></p>
-<ol>
+<ul>
 <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP (Cross-platform Apache, MySQL, PHP Stack)</a></li>
 <li><a href="http://wordpress.org/download/">WordPress v. 3.3.2</a></li>
-</ol>
+</ul>
 <p>Please install the required software components for the module you intend on using, and proceed to the next step</p>
 <h2>Installing from Git</h2>
 <p>Before you do anything else, check out the source from the <a href="https://github.com/krisrm/user-story-cjax">GitHub repository</a> 
 using the <em>git clone</em> command.</p>
 <h3>Testing Server</h3>
-<p>Copy the TestServer.war file into your servlet container's webapps directory (may be something else under a different servlet container).
+<p>Copy the CrawlJaxServer.war file into your servlet container's webapps directory (may be something else under a different servlet container).
 Make sure your server is started; the application should start automatically and respond to calls through the API.</p>
 <p>To build from source, import the CrawlJaxServer project into <a href="http://www.eclipse.org/downloads/moreinfo/jee.php">Eclipse for JavaEE</a>. 
 You'll need to set up a server to deploy the project to (via File, New, Other: Server), and then set the project's server to the one you just created.</p>
@@ -51,7 +51,59 @@ Update the file "db.php" with your database name/username/password.</p>
  In practice though, you should write your own application and then point the User Story Wiki/Testing Server at localhost/application (for example)
  for testing.
 </p>
+<h2>Sample User Story Wiki</h2>
+<p>We'll walk through the elements of the User Story Wiki (screenshot below)</p>
+<img src="userstorywiki.png" alt="User Story Wiki screenshot" width="900">
+<ol>
+<li><strong>Run Tests Button</strong><br>Press this to run all of your tests on the currently configured Crawljax Test Server (see 3)</li>
+<li><strong>Overall Test Progress Bar</strong><br>Shows the current number of passing assertions over the total number of assertions made.</li>
+<li><strong>Configure Button</strong><br>Allows you to specify the location of the Crawljax server, the location of your application to test, and a script to run before each test script.</li>
+<li><strong>User Stories List</strong><br>Shows a list of the application's specified User Stories, and the currently selected User Story.</li>
+<li><strong>New User Story</strong><br>Adds a new User Story to the list and selects it for editing.</li>
+<li><strong>Individual Test Progress Badges</strong><br>Shows test completion progress on each User Story. A 0 means that no tests have been successfully run yet (as you can see on the sample <em>Untitled</em> User Story I've just created).</li>
+<li><strong>User Story Details</strong><br>Each User Story is composed of a Title, id number, Primary Actor, Goal, Benefit, and a brief comment. See <a href="http://en.wikipedia.org/wiki/User_story">User Stories</a> for more details.</li>
+<li><strong>Test Script</strong><br>The linked test script for the User Story. This is a simple set of JavaScript commands to order around the crawler and test the current page for expected behavior (the last section will detail the Crawljax functions you can call here).</li>
+<li><strong>Testing Errors/Assertion Failures</strong><br>Shows a list of assertions that failed the last time that the tests were run, with a message.</li>
+</ol>
+<h2>Case Study: Testing a WordPress Blog</h2>
+<p>Let's walk through testing the login functionality of a WordPress blog</p>
+<p>Starting from an empty database, we see the following screen:</p>
+<img src="case-study-1.png" alt="User Story Wiki screenshot" width="900">
+<p>Let's start by creating a new User Story for our Log In functionality. Click the Add User Story button, and fill in the fields as shown. Press save when you're finished.</p>
+<img src="case-study-2.png" alt="User Story Wiki screenshot" width="900">
+<p>Next, we should make sure the application is configured. Provide the urls of your CrawlJax Server and application to be tested (I put mine in the wp folder, as shown below). We'll leave the Setup Script blank for now.</p>
+<img src="case-study-3.png" alt="User Story Wiki screenshot" width="900">
+<p>Now, go back to the User Story we created, and add these lines into the Test Script. All we're asking the Crawler to do here is go to the login page. Make sure you've started your CrawlJax Test Server, and click the "Run All Tests" button at the top.</p>
+<img src="case-study-4.png" alt="User Story Wiki screenshot" width="900">
+<p>A dialog like this will show up, indicating that tests are about to be run. If you're running the CrawlJax Test Server locally (which I highly recommend), you'll see Firefox open up and navigate to the login page.</p>
+<img src="case-study-5.png" alt="User Story Wiki screenshot" width="600">
+<p>When Firefox closes, you should see that the test progress has been updated: all the tests have run successfully.</p> 
+<img src="case-study-6.png" alt="User Story Wiki screenshot" width="600">
+<p>Now we need some test logic, and assertion statements. Update the test script a bit:</p>
+<img src="case-study-7.png" alt="User Story Wiki screenshot" width="600">
+<p>(eid is a utility function for retrieving elements by id from the document). Fill in the username and password boxes, and click the login button, and assert that the administrator controls are only available (i.e. not null) after we log in.</p>
+<img src="case-study-8.png" alt="User Story Wiki screenshot" width="900">
+<p>Oops! looks like something failed. We can see that it's assert-2, and that we didn't obtain proper access. In this case, we need to check our test. The password for the admin user isn't correct:</p>
+<img src="case-study-9.png" alt="User Story Wiki screenshot" width="900">
+<p>Now all of the tests pass! We can continue writing tests for the user story, or add and test more user stories. The process is the same from here.</p>
 
+<h2>Testing Script Function Library</h2>
+<p>The external functions available in the <em>Test Script</em> section of the User Stories are divided into two classes:</p>
+<h3>Crawler Functions</h3>
+<p>Crawler Functions tell the Crawljax server where to go in your application and which buttons to click.
+A block of directions is always followed by a call to <code>Crawler.start("id")</code>, which tells the crawler
+to execute the previous block of directions.</p>
+<code>Crawler.go("relative url")</code><p>Tells the Crawler to go to a url relative to the application path defined in the configuration (e.g. if my configuration path was localhost/wp, I could provide this with "wp-login.php" and the crawler would go to localhost/wp/wp-login.php)</p>
+<code>Crawler.goAbs("absolute url")</code><p>Tells the Crawler to go to an absolute url (e.g. calling this with www.google.ca will direct the crawler to open www.google.ca)</p>
+<code>Crawler.click(element)</code><p>Give a DOM element; CrawlJax will add it to it's list of elements to click. This can be called sequentially with different elements.</p>
+<code>Crawler.start("id")</code><p>Tells the Crawler to start with any previous instructions that haven't yet been followed. The id must be unique for the test case.</p>
+<h3>Assertions</h3>
+<code>Assert.assertTrue("id",value,"error message if failure")</code><p>The basic assertion unit. Provide an id unique to the test, the value you expect to be true, and an error message to be posted back if the test fails.</p>
+<code>Assert.assertFalse("id",value,"error message if failure")</code><p>Asserts that value is false. Posts error otherwise.</p>
+<code>Assert.assertNull("id",value,"error message if failure")</code><p>Asserts that a value is null (==null). Posts error otherwise.</p>
+<code>Assert.assertNotNull("id",value,"error message if failure")</code><p>Asserts that a value is not null (!=null). Posts error otherwise.</p>
+<code>Assert.assertEquals("id",value1,value2,"error message if failure")</code><p>Asserts that value1 equals value2 (value1==value2). Posts error otherwise.</p>
+<p>Every other instruction in the Test Script or Setup Script areas is simply vanilla JavaScript. You may also use functions from the <a href="http://www.json.org/js.html">JSON library</a></p>
 </div>
 </body>
 </html>

@@ -1,0 +1,83 @@
+
+body {
+/*  	font-family: Segoe UI,Tahoma,Arial,Verdana,sans-serif;  */
+/* 	font-size: 12pt; */
+	padding: 0px;
+	margin: 60px 0px 0px 0px;
+}
+
+h1,#app-title {
+	font-family: Segoe UI Light, Tahoma, Arial, Verdana, sans-serif;
+	font-size: 1.8em;
+}
+#back{
+	margin-left:50px;
+	margin-bottom:7px;	
+}
+#header {
+	color: #fff;
+	background-color: #000;
+	height: 60px;
+	}
+#header h1 {
+	position:relative;
+	left: 20px;	
+	top: 7px;
+}
+
+#use-case-list {
+	margin-bottom: 15px;	
+}
+
+#use-case-list-title {
+	font-size: 1.2em;
+	text-transform: none;
+}
+#test-button {
+	font-weight: bold;	
+}
+
+.topcenter{
+	margin-top: 11px;
+	margin-bottom: -11px;
+}
+
+#overall-progress {
+	margin-left: -20px;	
+}
+
+.uc {
+	width: 60%;
+}
+.uc-badge{
+	position: relative;
+	margin-top: -23px;
+	float:right;
+	text-align: center;
+}
+
+.uc-delete{
+	position: relative;
+	right: 20px;
+}
+
+.uc-id{
+	font-size: 2em;
+	text-shadow: 1px 1px 2px #bbb;
+	float:right;
+}
+#script {
+	width:100%;	
+}
+
+.err-id {
+	width: 150px;	
+}
+
+#title{
+	font-size: 14pt;
+	padding: 6px;
+	margin-left: 20px;	
+	margin-bottom: 5px;
+	width: 250px;
+}

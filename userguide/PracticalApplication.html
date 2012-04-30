@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Feature Testing with Crawljax and JavaScript - Practical Applications</title>
+<link rel="stylesheet" href="user-guide.css">
+</head>
+<body>
+<div id=content>
+<h1>Feature Testing with Crawljax and JavaScript</h1>
+<h4>Practical Applications and Future Work</h4>
+<p>This software has several interesting practical applications. Since the CrawlJax test server itself is independent of the
+User Story Wiki, it can be used as a generalized engine for testing arbitrary AJAX enabled web applications. The Sample User Story
+Wiki is one example of how you could visualize test progress over well defined User Stories, all on an external site - meaning
+testers and developers can work independently if they so choose.</p>
+<p>One of the drawbacks of such an approach is the ad-hoc nature of testing. Some integrated web application testing frameworks
+(like <a href="http://rubydoc.info/gems/rspec-rails/frames">Spec</a> for Ruby on Rails) allow you to write tests very quickly
+from the comfort of your development environment. Software such as the Sample User Story Wiki would be more useful for 
+Black Box user interface testing and visualizations of project completion based on the tests done directly on User Stories. 
+A related advantage of this approach is that the testing environment becomes language/development environment agnostic (so
+long as the application you are testing can be accessed entirely from the browser, with some limitations). I tested a PHP
+application (WordPress), but even a simple static HTML site could have been traversed and tested.
+</p>
+<h2>Future Work</h2>
+<ul>
+<li>More error checking. Right now if a script dies, no callback is made to the server; the test case is aborted.</li>
+<li>Implement <code>Crawler.input(element,"value")</code> (in CrawlJaxServer's crawljax.js)</li>
+<li>Extend the Crawler.click identification structure (right now identifies only by tag name and id)</li>
+<li>Add a JavaScript code editor in place of the textarea in the Sample User Wiki</li>
+<li>Better separation of test cases (allow more than 1 large block test case) from User Stories</li>
+</ul>
+<h2>Known Issues</h2>
+<ul>
+<li>A limitation of the selenium WebDriver used by Crawljax does not allow for the web browser to respond to requests for Basic or Digest HTTP Authentication</li>
+<li>Testing applications with invalid Certificate Authorities (i.e. ones that warn of CA invalidity) is currently not supported</li>
+<li>Clearing Test Cases sometimes doesn't remove orphaned errors from the database</li>
+<li>Occasional erroneous behaviour on click from CrawlJax (I think the configuration needs to be reset in between invocations)</li>
+</ul>
+<h2>Related Work</h2>
+<ul>
+<li><a href="http://www.cs.umd.edu/~atif/publications.shtml">http://www.cs.umd.edu/~atif/publications.shtml</a>
+<p>A number of papers on testing (namely GUI testing, which CrawlJax does). There was a <a href="http://www.cs.umd.edu/~atif/papers/HacknerMemonICSE2008.pdf">2008 paper</a> on test generation for 
+<a href="http://sourceforge.net/apps/mediawiki/guitar/index.php?title=GUITAR_Home_Page">GUITAR</a> (an older GUI testing framework for desktop widget toolkits developed by the same person) 
+that has a similar set of execution steps (and calculates test coverage)</p></li>
+<li><a href="http://jucmnav.softwareengineering.ca/ucm/bin/view/UCM/WebHome">http://jucmnav.softwareengineering.ca/ucm/bin/view/UCM/WebHome</a><p>
+User Requirements Notation language. This is a more general purpose language - the site states “the notation is intended to be 
+useful for requirements specification, design, testing, maintenance, adaptation, and evolution”. I opted to specify very 
+simple User Stories as links to tests, however, tests could be embedded in URNL.</p></li>
+</ul>
+</div>
+</body>
+</html>
